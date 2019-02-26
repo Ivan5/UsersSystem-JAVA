@@ -60,4 +60,39 @@ public class SqlUsuarios extends Conexion{
         
         return mather.find();
     }
+    
+    
+     public boolean login(Usuarios usr){
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection con = getConexion();
+        
+        String sql = "select id,usuario,password,nombre,id_tipo from usuarios where usuario=?";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, usr.getUsuario());
+            rs = ps.executeQuery();
+            if(rs.next()){
+                if(usr.getPassword().equals(rs.getString(3))){
+                    String sqlUpadate = "update usuarios set last_session = ? where id=?";
+                    ps=con.prepareStatement(sqlUpadate);
+                    ps.setString(1, usr.getLas_session());
+                    ps.setInt(2, rs.getInt(1));
+                    ps.execute();
+                    usr.setId(rs.getInt(1));
+                    usr.setNombre(rs.getString(4));
+                    usr.setId_tipo(rs.getInt(5));
+                    
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+          return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(SqlUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        
+    }
 }
