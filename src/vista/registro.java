@@ -155,26 +155,50 @@ public class registro extends javax.swing.JFrame {
        String pas = new String(txtPassword.getPassword());
        String pasCon = new String(txtConfirmar.getPassword());
        
-       if(pas.equals(pasCon)){
-           String nuevoPass = Hash.sha1(pas);
-           modelo.setUsuario(txtUsuariio.getText());
-           modelo.setPassword(nuevoPass);
-           modelo.setNombre(txtNombre.getText());
-           modelo.setCorre(txtCorreo.getText());
-           modelo.setId_tipo(1);
-           
-           if(modSql.registrar(modelo)){
-               JOptionPane.showMessageDialog(null, "Registro Guardado");
-           }else{
-               JOptionPane.showMessageDialog(null, "Error al Guardado");
-
-           }
+       if(txtUsuariio.getText().equals("") || txtNombre.getText().equals("") || txtCorreo.getText().equals("") || pas.equals("") || pasCon.equals("")){
+           JOptionPane.showMessageDialog(null, "Error hay campos vacios");
        }else{
-           JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden");
+           if (pas.equals(pasCon)) {
+               if(modSql.existeUsuario(txtUsuariio.getText()) == 0){
+                   
+                   if(modSql.esEmail(txtCorreo.getText())){
+                   
+                       String nuevoPass = Hash.sha1(pas);
+                       modelo.setUsuario(txtUsuariio.getText());
+                       modelo.setPassword(nuevoPass);
+                       modelo.setNombre(txtNombre.getText());
+                       modelo.setCorre(txtCorreo.getText());
+                       modelo.setId_tipo(1);
+
+                       if (modSql.registrar(modelo)) {
+                           JOptionPane.showMessageDialog(null, "Registro Guardado");
+                           limpiar();
+                       } else {
+                           JOptionPane.showMessageDialog(null, "Error al Guardado");
+
+                       }
+                   }else{
+                      JOptionPane.showMessageDialog(null, "Error al correo electronico no es valido");
+
+                   }
+               }else{
+                 JOptionPane.showMessageDialog(null, "Error el usuario ya existe");
+
+               }
+           } else {
+               JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden");
+           }
        }
        
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
+    private void limpiar(){
+        txtUsuariio.setText("");
+        txtPassword.setText("");
+        txtConfirmar.setText("");
+        txtNombre.setText("");
+        txtCorreo.setText("");
+    }
     /**
      * @param args the command line arguments
      */
