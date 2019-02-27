@@ -67,14 +67,14 @@ public class SqlUsuarios extends Conexion{
         ResultSet rs = null;
         Connection con = getConexion();
         
-        String sql = "select id,usuario,password,nombre,id_tipo from usuarios where usuario=?";
+        String sql = "select u.id,u.usuario,u.password,u.nombre,u.id_tipo, t.nombre from usuarios as u inner join tipo_usuario as t on u.id_tipo = t.id where usuario=?";
         try {
             ps = con.prepareStatement(sql);
             ps.setString(1, usr.getUsuario());
             rs = ps.executeQuery();
             if(rs.next()){
                 if(usr.getPassword().equals(rs.getString(3))){
-                    String sqlUpadate = "update usuarios set last_session = ? where id=?";
+                    String sqlUpadate = "update usuarios set las_session = ? where id=?";
                     ps=con.prepareStatement(sqlUpadate);
                     ps.setString(1, usr.getLas_session());
                     ps.setInt(2, rs.getInt(1));
@@ -82,7 +82,7 @@ public class SqlUsuarios extends Conexion{
                     usr.setId(rs.getInt(1));
                     usr.setNombre(rs.getString(4));
                     usr.setId_tipo(rs.getInt(5));
-                    
+                    usr.setNombre_tipo(rs.getString(6));
                     return true;
                 }else{
                     return false;

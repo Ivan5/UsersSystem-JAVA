@@ -129,7 +129,7 @@ public class login extends javax.swing.JFrame {
                 Inicio.frmLogin = null;
                 this.dispose();
                 
-                Home frmHome = new Home();
+                Home frmHome = new Home(modelo);
                 frmHome.setVisible(true);
                 
             }else{
